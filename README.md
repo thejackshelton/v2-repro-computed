@@ -1,65 +1,37 @@
-# Qwik City App ⚡️
+There is an issue with useComputed$ where in dev mode it works, in production it breaks.
 
-- [Qwik Docs](https://qwik.dev/)
-- [Discord](https://qwik.dev/chat)
-- [Qwik GitHub](https://github.com/QwikDev/qwik)
-- [@QwikDev](https://twitter.com/QwikDev)
-- [Vite](https://vitejs.dev/)
+Reproduction steps:
 
----
+1. pnpm i && pnpm preview
+2. notice that the checkbox does not check or toggle, and there is an error from qwik core in the console
 
-## Project Structure
+working behavior:
 
-This project is using Qwik with [QwikCity](https://qwik.dev/qwikcity/overview/). QwikCity is just an extra set of tools on top of Qwik to make it easier to build a full site, including directory-based routing, layouts, and more.
+1. run dev mode
+2. notice that it is toggling in dev mode
 
-Inside your project, you'll see the following directory structure:
+isolating the issue:
 
-```
-├── public/
-│   └── ...
-└── src/
-    ├── components/
-    │   └── ...
-    └── routes/
-        └── ...
+1. It works in production again after removing this piece of code in `checkbox-trigger`:
+
+```tsx
+    aria-describedby={
+        describedByLabels ? describedByLabels.value : undefined
+    }
 ```
 
-- `src/routes`: Provides the directory-based routing, which can include a hierarchy of `layout.tsx` layout files, and an `index.tsx` file as the page. Additionally, `index.ts` files are endpoints. Please see the [routing docs](https://qwik.dev/qwikcity/routing/overview/) for more info.
+describedByLabels is a computed
 
-- `src/components`: Recommended directory for components.
-
-- `public`: Any static assets, like images, can be placed in the public directory. Please see the [Vite public directory](https://vitejs.dev/guide/assets.html#the-public-directory) for more info.
-
-## Add Integrations and deployment
-
-Use the `pnpm qwik add` command to add additional integrations. Some examples of integrations includes: Cloudflare, Netlify or Express Server, and the [Static Site Generator (SSG)](https://qwik.dev/qwikcity/guides/static-site-generation/).
-
-```shell
-pnpm qwik add # or `pnpm qwik add`
+```tsx
+		const describedByLabels = useComputed$(() => {
+			const labels = [];
+			if (context.description) {
+				labels.push(descriptionId);
+			}
+			if (context.isErrorSig.value) {
+				labels.push(errorId);
+			}
+			return labels.join(" ") || undefined;
+		});
 ```
 
-## Development
-
-Development mode uses [Vite's development server](https://vitejs.dev/). The `dev` command will server-side render (SSR) the output during development.
-
-```shell
-npm start # or `pnpm start`
-```
-
-> Note: during dev mode, Vite may request a significant number of `.js` files. This does not represent a Qwik production build.
-
-## Preview
-
-The preview command will create a production build of the client modules, a production build of `src/entry.preview.tsx`, and run a local server. The preview server is only for convenience to preview a production build locally and should not be used as a production server.
-
-```shell
-pnpm preview # or `pnpm preview`
-```
-
-## Production
-
-The production build will generate client and server modules by running both client and server build commands. The build command will use Typescript to run a type check on the source code.
-
-```shell
-pnpm build # or `pnpm build`
-```
