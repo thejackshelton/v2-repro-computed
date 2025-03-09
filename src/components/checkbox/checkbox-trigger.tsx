@@ -6,8 +6,8 @@ import {
 	sync$,
 	useComputed$,
 	useContext,
-} from "@builder.io/qwik";
-import { syncFixedInV2, withAsChild } from "../as-child/as-child";
+} from "@qwik.dev/core";
+import { withAsChild } from "../as-child/as-child";
 import { Render } from "../render/render";
 import { checkboxContextId } from "./checkbox-context";
 type PublicCheckboxControlProps = PropsOf<"button">;
@@ -37,13 +37,11 @@ export const CheckboxTriggerBase = component$(
 			}
 		});
 
-		const handleKeyDownSync$ = syncFixedInV2(
-			sync$((e: KeyboardEvent) => {
-				if (e.key === "Enter") {
-					e.preventDefault();
-				}
-			}),
-		);
+		const handleKeyDownSync$ = sync$((e: KeyboardEvent) => {
+			if (e.key === "Enter") {
+				e.preventDefault();
+			}
+		});
 
 		return (
 			<Render
