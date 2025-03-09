@@ -1,0 +1,14 @@
+@layer qds {
+	[data-qds-indicator] {
+		user-select: none;
+	}
+
+	[data-qds-checkbox-trigger] {
+		min-height: 40px;
+		min-width: 40px;
+	}
+
+	[data-qds-indicator][data-hidden] {
+		display: none;
+	}
+}
